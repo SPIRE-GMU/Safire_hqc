@@ -26,13 +26,20 @@ def number(value):
     return int(value, 16 if value.lower().startswith("0x") else 10)
 
 
+TEMPLATE_ARGUMENTS = re.compile(r"I((?:L[a-z]n?\d+E)+)E")
+DEMANGLED_TEMPLATE = re.compile(r"(?:.*\s)?(\w+)<(\d+)[a-zA-Z]*>")
+
+
 def plain_name(symbol):
     """Read length-prefixed Itanium identifiers, not a full demangler.
 
-    Crucially k_btfy is not mistaken for a prefix of k_btfy_si10.
+    Crucially k_btfy is not mistaken for a prefix of k_btfy_si10. Integer template
+    arguments are kept, so the instances tile_mid<5> and tile_mid<6> of one kernel
+    template stay distinct.
     """
     if not symbol.startswith("_Z"):
-        return symbol
+        demangled = DEMANGLED_TEMPLATE.match(symbol.split("(", 1)[0])
+        return f"{demangled[1]}<{demangled[2]}>" if demangled else symbol
     rest = symbol[2:]
     nested = rest.startswith("N")
     if nested:
@@ -46,8 +53,14 @@ def plain_name(symbol):
         rest = rest[len(match[1]):]
         if length <= 0 or len(rest) < length:
             return symbol
-        names.append(rest[:length])
+        name = rest[:length]
         rest = rest[length:]
+        arguments = TEMPLATE_ARGUMENTS.match(rest)
+        if arguments:
+            values = re.findall(r"L[a-z](n?)(\d+)E", arguments[1])
+            name += "<" + ",".join(("-" if minus else "") + digits for minus, digits in values) + ">"
+            rest = rest[arguments.end():]
+        names.append(name)
         if not nested:
             break
     return "::".join(names) if names else symbol

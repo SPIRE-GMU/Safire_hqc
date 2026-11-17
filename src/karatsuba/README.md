@@ -2,7 +2,9 @@
 
 A packed GF(2) polynomial multiplier for the HQC lengths, split by t levels of two-way Karatsuba over a chain of 3^t + 1 AIE tiles: 3^t working tiles, each multiplying one leaf of L bits, and one tile that folds the partial products and reduces modulo X^n - 1 (t = 0 runs everything on a single tile). The leaf is an int16 `sliding_mul` schedule whose lane products are reduced to their parity.
 
-The 13 directories are the ADF projects of the measured configurations, `<case>_L<L>_t<t>` with case `hqc1` (n = 17,669), `hqc3` (35,851) or `hqc5` (57,637): HQC-1 with t = 0, 2, 3, 4, 5 and HQC-3 and HQC-5 with t = 2, 3, 4, 5, with L = 288 for HQC-1 and HQC-3 and L = 480 for HQC-5 (HQC-3 and HQC-5 do not fit a single tile). They are the kernel sources exactly as compiled for the measurements, with two paths changed: the tool scripts, which the projects share in `tools/` instead of carrying a copy each, and the leaf, which every project includes from `leaf_aie.h` in this directory.
+The 13 directories are the ADF projects of the measured configurations, `<case>_L<L>_t<t>` with case `hqc1` (n = 17,669), `hqc3` (35,851) or `hqc5` (57,637): HQC-1 with t = 0, 2, 3, 4, 5 and HQC-3 and HQC-5 with t = 2, 3, 4, 5, with L = 288 for HQC-1 and HQC-3 and L = 480 for HQC-5 (HQC-3 and HQC-5 do not fit a single tile). Every work tile of a chain is an instance of one kernel source, `aie/src/kernels/tile.cc`: the template argument is the position of the tile in the chain and selects its segment and offset tables at compile time, and the first and the last tile differ from the middle ones only in their stream ports (`tile_first<0>`, `tile_mid<ID>`, `tile_last<ID>`). The single-tile configuration `hqc1_L288_t0` has its one kernel in `tile0.cc`. Two paths differ from the tree the measurements were built from: the tool scripts, which the projects share in `tools/` instead of carrying a copy each, and the leaf, which every project includes from `leaf_aie.h` in this directory.
+
+The numbers in the tables were measured with an earlier form of the same kernels in which every work tile had its own source file. The merged form here has been checked on the host only: every work tile of every configuration instantiated with a C++ compiler against declaration stubs, the graphs parsed, and the instances compiled in two groups and linked without duplicate definitions. It has not been through `aiecompiler`, `x86simulator` or `aiesimulator` yet.
 
 ## Layout of one project
 
@@ -12,10 +14,10 @@ leaf_aie.h                  the leaf, included by every project
 <config>/kara_ctrl.h        the packed Karatsuba recursion, unrolled per level
 <config>/tile.h             the work tile (receive, compute, emit) and the folding tile
 <config>/fold.h, leaf.h     word folding with frame tail clearing; the leaf interface
-<config>/aie/project.h      the graph: 3^t + 1 kernels, PLIO ports and stream connections
+<config>/aie/project.h      the graph: the 3^t work kernels instantiated from the templates, the folding kernel, PLIO ports and stream connections
 <config>/aie/project.cpp    graph instance, run(2): two multiplications back to back
-<config>/aie/kernels.h      kernel declarations
-<config>/aie/src/kernels/   tile<i>.cc (one translation unit and namespace per working tile), fold.cc, leaf_aie.h (a one-line include of ../../../../leaf_aie.h)
+<config>/aie/kernels.h      declarations of the three work-tile templates and of fold
+<config>/aie/src/kernels/   tile.cc (the work-tile kernel templates; tile0.cc in hqc1_L288_t0), fold.cc, leaf_aie.h (a one-line include of ../../../../leaf_aie.h)
 <config>/aie/data/          in.txt (two input frames), expected.txt (the two expected output frames), manifest.json (which vectors they are)
 <config>/aie/tools/project.json   frame length, kernel names and the checker path, read by the tools
 <config>/aie/Makefile       the targets below

@@ -1,4 +1,4 @@
-// AIE1 int16 leaf, Vitis 2023.2. Include once per independently named tile TU.
+// AIE1 int16 leaf, Vitis 2023.2. Include once per kernel source file.
 #ifndef KARA_LEAF_AIE_H
 #define KARA_LEAF_AIE_H
 #include <adf.h>
@@ -19,6 +19,22 @@
 #endif
 #ifndef KARA_NOINLINE
 #define KARA_NOINLINE __attribute__((noinline))
+#endif
+// One kernel source file may serve many kernel instances (the work tiles of a chain).
+// On the AI Engine every core is a program of its own, so nothing is shared.
+// x86simulator links all instances into one image and runs each in its own thread:
+// there the leaf must be a single inline definition and its work arrays per thread.
+#ifdef __X86SIM__
+#define KARA_LEAF_LINKAGE inline
+#else
+#define KARA_LEAF_LINKAGE
+#endif
+#ifndef X86SIM_THREAD_LOCAL   // defined by adf.h: thread_local in x86simulator, empty otherwise
+#ifdef __X86SIM__
+#define X86SIM_THREAD_LOCAL thread_local
+#else
+#define X86SIM_THREAD_LOCAL
+#endif
 #endif
 #if KARA_STATIC_TRIPS
 // Share the two MAC bodies across all fixed-trip wrappers.
@@ -55,8 +71,8 @@ constexpr unsigned leaf_static_bytes() { return 4u * L_BITS + 128u; }
 
 #if KARA_LEAF_PROFILE
 inline uint64_t* leaf_profile_cycles() {
-    // Last leaf invocation only; independent per uniquely named tile namespace.
-    static uint64_t cycles[3];
+    // Last leaf invocation only; one copy per kernel instance.
+    static X86SIM_THREAD_LOCAL uint64_t cycles[3];
     return cycles;
 }
 #endif
@@ -188,15 +204,15 @@ KARA_NOINLINE static aie::accum<acc48, 16> leaf_block(
 }
 #endif
 
-KARA_NOINLINE void leaf_conv(const uint32_t* __restrict a,
+KARA_LEAF_LINKAGE KARA_NOINLINE void leaf_conv(const uint32_t* __restrict a,
                              const uint32_t* __restrict b,
                              uint32_t* __restrict out) {
     aie::set_saturation(aie::saturation_mode::none);
     aie::set_rounding(aie::rounding_mode::floor);
     static_assert(L_BITS >= 32u && L_BITS % 32u == 0u,
                   "AIE leaf length must be a positive multiple of 32");
-    alignas(32) static int16 data[L_BITS + 64u];
-    alignas(32) static int16 coeff[L_BITS];
+    alignas(32) static X86SIM_THREAD_LOCAL int16 data[L_BITS + 64u];
+    alignas(32) static X86SIM_THREAD_LOCAL int16 coeff[L_BITS];
 #if KARA_LEAF_PROFILE
     uint64_t* const profile = leaf_profile_cycles();
     profile[0] = profile[1] = profile[2] = 0u;

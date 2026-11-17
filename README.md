@@ -43,7 +43,7 @@ Throughput is n / latency of one multiplication. Latency is the time from the st
 ## Layout
 
 ```
-src/karatsuba/   GF(2) Karatsuba: the AIE kernel sources of the 13 measured configurations, as compiled
+src/karatsuba/   GF(2) Karatsuba: the AIE kernel sources of the 13 measured configurations
 src/fafft/       FAFFT multiplier (to be added)
 baseline/        HQC C code profiled on the VCK190's Cortex-A72, against a pinned upstream commit
 benchmark/       result collection and comparison tables
