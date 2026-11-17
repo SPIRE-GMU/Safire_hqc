@@ -6,31 +6,5 @@
   "case": "hqc-1",
   "word_format": "signed decimal int32, one word per line",
   "input_words": 2216,
-  "output_words": 1108,
-  "sources": [
-    {
-      "path": "vectors/hqc-1/golden/a_u32.txt",
-      "sha256": "71119f3ebbdb5c436597601f5b81a58379d4183a54697387ea386cf733dc4c84"
-    },
-    {
-      "path": "vectors/hqc-1/golden/b_u32.txt",
-      "sha256": "ba9f49e1dbfa68d647f75b5f8cc8cb6479f102d82bde184ec8007616d8ac1cc7"
-    },
-    {
-      "path": "vectors/hqc-1/golden/red_u32.txt",
-      "sha256": "c687cbd157b0d8e04ccf00f78fca87c646b3c164a0b7778732ef4933f04cdee9"
-    },
-    {
-      "path": "vectors/hqc-1/dense1/a_u32.txt",
-      "sha256": "04df2815e9a5e4698d8eeb89773d03b58cc68735f7744f2aa802194a181fc921"
-    },
-    {
-      "path": "vectors/hqc-1/dense1/b_u32.txt",
-      "sha256": "126cff32001d4003e16bece2f1cbab77084b2fb7fba77f58a7312fc3b3683ad8"
-    },
-    {
-      "path": "vectors/hqc-1/dense1/red_u32.txt",
-      "sha256": "b311dbd3f9df757d9a004f64f8b1e5bdab2100b74394b28d715c9ef46d17b802"
-    }
-  ]
+  "output_words": 1108
 }

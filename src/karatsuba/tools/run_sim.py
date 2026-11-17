@@ -14,13 +14,13 @@ def run(kind, work, output, root=ROOT):
     output = (root / output).resolve()
     for path in (work, output):
         if root not in path.parents:
-            raise ValueError("work and output must be strictly inside impl/")
+            raise ValueError("work and output must be strictly inside the project directory")
     if output == work or output in work.parents or work in output.parents:
         raise ValueError("output must be separate from the work directory")
     if not work.is_dir():
         raise ValueError(f"missing package directory: {work}")
     if output.exists():
-        raise ValueError(f"preserve existing output by renaming it inside impl/: {output}")
+        raise ValueError(f"preserve existing output by renaming it inside the project directory: {output}")
     default = root / ("x86simulator_output" if kind == "x86" else "aiesimulator_output")
     if work == default or default in work.parents or work in default.parents:
         raise ValueError("work must be separate from the simulator's default output")

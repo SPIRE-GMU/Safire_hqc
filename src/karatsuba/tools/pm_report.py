@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Report Synopsys bridge map sections, symbols and coreverify diagnostics.
 
-The task-04 excerpts establish the supported format, not a complete remote map.
+The supported format was established from excerpts of the map files, not from a complete map.
 Section Used and coreverify program size are independent measurements. Never
 sum alias memories, infer sizes from addresses, or convert Width != 8 to bytes.
 """
@@ -243,7 +243,7 @@ def show_usage(value):
 
 def report_text(records, work, result_dir, mapping=None):
     lines = ["Karatsuba AIE Synopsys bridge map report", f"Work: {work}",
-             "Supported format: task-04 excerpts; full remote maps still require verification.",
+             "Supported format: established from map excerpts; complete maps still require verification.",
              "PM Used and coreverify program size remain separate; no reconciliation or alias summation.",
              "Stack = DM_stack Used; maximum frame is a single function frame, not call-chain stack usage.",
              "Only Width = 8 is converted from items to bytes. Width != 8: units unknown.", "",
@@ -309,7 +309,7 @@ def main(argv=None):
     if not paths and work.is_dir():
         paths = sorted(work.rglob("*.map"))
     records = [analyze(path, work, result_dir, mapping) for path in paths]
-    summary = {"format": "Synopsys bridge memory map", "format_evidence": "task-04 original excerpts",
+    summary = {"format": "Synopsys bridge memory map", "format_evidence": "map excerpts",
                "full_remote_format_verified": False, "work": str(work), "maps_found": len(records),
                "maps": records, "unresolved_maps": [row["map"] for row in records if row["kernel"] == "UNRESOLVED"]}
     identified = {row["kernel"] for row in records if row["kernel"] != "UNRESOLVED"}

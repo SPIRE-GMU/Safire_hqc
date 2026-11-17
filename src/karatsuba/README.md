@@ -2,11 +2,12 @@
 
 A packed GF(2) polynomial multiplier for the HQC lengths, split by t levels of two-way Karatsuba over a chain of 3^t + 1 AIE tiles: 3^t working tiles, each multiplying one leaf of L bits, and one tile that folds the partial products and reduces modulo X^n - 1 (t = 0 runs everything on a single tile). The leaf is an int16 `sliding_mul` schedule whose lane products are reduced to their parity.
 
-The 13 directories are the ADF projects of the measured configurations, `<case>_L<L>_t<t>` with case `hqc1` (n = 17,669), `hqc3` (35,851) or `hqc5` (57,637): HQC-1 with t = 0, 2, 3, 4, 5 and HQC-3 and HQC-5 with t = 2, 3, 4, 5, with L = 288 for HQC-1 and HQC-3 and L = 480 for HQC-5 (HQC-3 and HQC-5 do not fit a single tile). They are the kernel sources exactly as compiled for the measurements. They were produced by a parameterised generator that is not part of this repository; the only edits after generation are the paths of the tool scripts, which the projects share in `tools/` instead of carrying a copy each.
+The 13 directories are the ADF projects of the measured configurations, `<case>_L<L>_t<t>` with case `hqc1` (n = 17,669), `hqc3` (35,851) or `hqc5` (57,637): HQC-1 with t = 0, 2, 3, 4, 5 and HQC-3 and HQC-5 with t = 2, 3, 4, 5, with L = 288 for HQC-1 and HQC-3 and L = 480 for HQC-5 (HQC-3 and HQC-5 do not fit a single tile). They are the kernel sources exactly as compiled for the measurements, with two paths changed: the tool scripts, which the projects share in `tools/` instead of carrying a copy each, and the leaf, which every project includes from `leaf_aie.h` in this directory.
 
 ## Layout of one project
 
 ```
+leaf_aie.h                  the leaf, included by every project
 <config>/config.h           sizes, tile segment masks and offsets of this configuration
 <config>/kara_ctrl.h        the packed Karatsuba recursion, unrolled per level
 <config>/tile.h             the work tile (receive, compute, emit) and the folding tile
@@ -14,7 +15,7 @@ The 13 directories are the ADF projects of the measured configurations, `<case>_
 <config>/aie/project.h      the graph: 3^t + 1 kernels, PLIO ports and stream connections
 <config>/aie/project.cpp    graph instance, run(2): two multiplications back to back
 <config>/aie/kernels.h      kernel declarations
-<config>/aie/src/kernels/   tile<i>.cc (one translation unit and namespace per working tile), fold.cc, leaf_aie.h (the leaf)
+<config>/aie/src/kernels/   tile<i>.cc (one translation unit and namespace per working tile), fold.cc, leaf_aie.h (a one-line include of ../../../../leaf_aie.h)
 <config>/aie/data/          in.txt (two input frames), expected.txt (the two expected output frames), manifest.json (which vectors they are)
 <config>/aie/tools/project.json   frame length, kernel names and the checker path, read by the tools
 <config>/aie/Makefile       the targets below
