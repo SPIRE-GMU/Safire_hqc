@@ -1,0 +1,23 @@
+# build, simulation and report products
+build/
+reports/
+tmp/
+Work*/
+*simulator_output*/
+.aie-shim-include/
+logs/
+out/
+results/
+__pycache__/
+.DS_Store
+# upstream sources fetched by baseline/hqc-a72/setup.sh
+baseline/hqc-a72/upstream/
+baseline/hqc-a72/src/hqc-*/
+baseline/hqc-a72/src/common/fips202.*
+# benchmark inputs and outputs
+benchmark/karatsuba/raw/
+benchmark/karatsuba/table.md
+benchmark/karatsuba/table.csv
+benchmark/karatsuba/compare.md
+# logs written by run_all.py and the project Makefiles
+*.log

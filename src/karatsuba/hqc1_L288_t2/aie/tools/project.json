@@ -1,0 +1,27 @@
+{
+  "name": "hqc1_L288_t2",
+  "n": 17669,
+  "L": 288,
+  "t": 2,
+  "frame_words": 554,
+  "iterations": 2,
+  "kernel_names": [
+    "tile0",
+    "tile1",
+    "tile2",
+    "tile3",
+    "tile4",
+    "tile5",
+    "tile6",
+    "tile7",
+    "tile8",
+    "fold"
+  ],
+  "case": "hqc-1",
+  "vectors": [
+    "golden",
+    "dense1"
+  ],
+  "checker_relative": "../../tools/compare.py",
+  "note": "golden then dense1"
+}

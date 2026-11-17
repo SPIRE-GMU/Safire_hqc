@@ -1,0 +1,3 @@
+# HQC-3 step 0: seed_kem, 32 random bytes drawn by randombytes() in hqc_kem_keygen.
+# In v5.1.0 this IS the KEM decapsulation key dk_kem (compressed dk).
+061550234d158c5ec95595fe04ef7a25767f2e24cc2bc479d09d86dc9abcfde7

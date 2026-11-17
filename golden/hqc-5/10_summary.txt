@@ -1,0 +1,40 @@
+# HQC-5 KeyGen golden run: parameters, counts and verification results
+variant HQC-5: n=57637 omega=132 omega_r=150 VEC_N_SIZE_BYTES=7205 VEC_N_SIZE_64=901 SEED_BYTES=32 PARAM_K=32
+PUBLIC_KEY_BYTES_PKE=7237 (= SEED_BYTES + VEC_N_SIZE_BYTES) SECRET_KEY_BYTES_PKE=32 CRYPTO_SECRETKEYBYTES=32
+UTILS_REJECTION_THRESHOLD=16772367 (= floor(2^24/n)*n = 291*57637) PARAM_N_MU=74517 (= floor(2^32/n))
+last 64-bit word of an n-bit vector keeps 37 bits (n mod 64), mask 0x0000001fffffffff
+PASS  step 1: one Keccak permutation of the padded state yields seed_pke
+PASS  step 1: library XOF state after squeeze matches (104 bytes left in the block)
+PASS  step 2: SHA3-512 recomputed from the padded state matches hash_i
+PASS  step 4: traced support of y (plain modulo) == vect_generate_random_support1 (Barrett)
+PASS  step 5: traced support of x == vect_generate_random_support1
+PASS  steps 4-5: XOF state after both samplings identical (same bytes consumed)
+PASS  step 4: direct bit set from support == vect_write_support_to_vector (y)
+PASS  step 5: direct bit set from support == vect_write_support_to_vector (x)
+PASS  step 4: vect_write_support_to_vector(support_y) == y
+PASS  steps 4-5: Hamming weight of y and x equals omega
+PASS  step 3: concatenated squeezed blocks == bytes consumed by the sampler
+y: 133 candidates, 0 rejected by threshold, 1 duplicates, 399 XOF bytes
+x: 133 candidates, 1 rejected by threshold, 0 duplicates, 399 XOF bytes
+PASS  step 6: squeezed blocks truncated to n bits == vect_set_random output h
+PASS  step 6: library consumed exactly ceil(VEC_N_SIZE_BYTES/136) blocks
+PASS  step 7: vect_mul(y,h) == word-shift sparse product folded mod X^n-1
+PASS  step 7: vect_mul(y,h) == bit-level sum of cyclic rotations rot(h, p), p in supp(y)
+PASS  step 8: vect_add(x, yh) == yh with the omega positions of supp(x) toggled
+PASS  step 9: assembled ek_pke == hqc_pke_keygen(seed_pke) ek
+PASS  step 9: dk_pke == hqc_pke_keygen(seed_pke) dk (= seed_dk)
+PASS  step 9: hqc_kem_keygen() with randombytes = seed_kem gives ek_kem == ek_pke
+PASS  step 9: hqc_kem_keygen() dk_kem == seed_kem
+Keccak-f[1600] permutations in this KeyGen: 1 (seed_pke) + 1 (hash_i) + 6 (dk XOF, sampling) + 53 (ek XOF, h) = 61
+PASS  intermediates_values[KEYGEN].seed_kem == computed (32 bytes)
+PASS  intermediates_values[KEYGEN].seed_pke == computed (32 bytes)
+PASS  intermediates_values[KEYGEN].seed_dk == computed (32 bytes)
+PASS  intermediates_values[KEYGEN].seed_ek == computed (32 bytes)
+PASS  intermediates_values[KEYGEN].y == computed (7205 bytes)
+PASS  intermediates_values[KEYGEN].x == computed (7205 bytes)
+PASS  intermediates_values[KEYGEN].h == computed (7205 bytes)
+PASS  intermediates_values[KEYGEN].s == computed (7205 bytes)
+PASS  intermediates_values[KEYGEN].ek_pke == computed (7237 bytes)
+PASS  intermediates_values[KEYGEN].dk_pke == computed (32 bytes)
+PASS  KAT: 100/100 entries, keygen(sk=seed_kem) reproduces pk and sk
+RESULT: ALL CHECKS PASSED

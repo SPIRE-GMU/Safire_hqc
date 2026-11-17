@@ -1,0 +1,18 @@
+{
+  "name": "hqc1_L288_t0",
+  "n": 17669,
+  "L": 288,
+  "t": 0,
+  "frame_words": 554,
+  "iterations": 2,
+  "kernel_names": [
+    "tile0"
+  ],
+  "case": "hqc-1",
+  "vectors": [
+    "golden",
+    "dense1"
+  ],
+  "checker_relative": "../../tools/compare.py",
+  "note": "golden then dense1"
+}

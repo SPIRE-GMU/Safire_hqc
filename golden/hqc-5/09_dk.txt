@@ -1,0 +1,3 @@
+# HQC-5 step 9: line 1 dk_pke = seed_dk (32 bytes); line 2 dk_kem = seed_kem (32 bytes, KAT 'sk').
+b3d54e3cdebe5cb245bf74f45b43e47afcd1ab5086fc6afa86c2615a681d0254
+061550234d158c5ec95595fe04ef7a25767f2e24cc2bc479d09d86dc9abcfde7
