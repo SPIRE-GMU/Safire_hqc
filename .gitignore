@@ -19,5 +19,7 @@ benchmark/karatsuba/raw/
 benchmark/karatsuba/table.md
 benchmark/karatsuba/table.csv
 benchmark/karatsuba/compare.md
+benchmark/fafft/table.md
+benchmark/fafft/table.csv
 # logs written by run_all.py and the project Makefiles
 *.log
