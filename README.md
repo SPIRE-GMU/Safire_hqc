@@ -1,4 +1,6 @@
-# Jetcas2027
+# SAFFIRE: Accelerating the Frobenius Additive FFT
+for Code-Based Post-Quantum Cryptography on
+Spatial Architecture
 
 GF(2) polynomial multiplication for HQC on the AI Engine array of an AMD Versal VCK190, measured against the board's own Cortex-A72. Two designs: a GF(2) Karatsuba chain that spreads the operands over a tree of AIE tiles (`src/karatsuba`), and a FAFFT multiplier that spreads the butterflies of the additive FFT over rails of AIE tiles (`src/fafft`). The lengths are the three HQC parameter sets, n = 17,669 / 35,851 / 57,637.
 
